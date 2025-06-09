@@ -251,8 +251,17 @@
       }
       const airportLayer = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_AirportsLab2/FeatureServer",
-        renderer: airportRenderer
+        renderer: airportRenderer,
+        featureReduction: {
+          type: "cluster",
+          clusterRadius: "75px",
+          popupTemplate: {
+            title: "Cluster of {cluster_count} Airports",
+            content: "Click individual airports for details."
+          }
+        }
       });
+
       map.add(airportLayer);
       //mouse listener
       view.on("pointer-move", function (event) {
