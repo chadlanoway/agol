@@ -44,7 +44,7 @@
         container: "viewDiv",
         map: map,
         center: [-97.7431, 30.2672],
-        scale: 50000000
+        scale: 60000000
 
       });
       // make a basemap gallery
@@ -252,7 +252,8 @@
       const airportLayer = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_AirportsLab2/FeatureServer",
         renderer: airportRenderer,
-        featureReduction: {
+        definitionExpression: "Fac_Type = 'AIRPORT'",
+        featureReduction: { // i think server side clustering would work better
           type: "cluster",
           clusterRadius: "75px",
           popupTemplate: {
