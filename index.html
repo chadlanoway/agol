@@ -239,6 +239,21 @@
       // Add to map
       map.addMany([terminatorLayer, horizonLayer, celestialLayer]);
 
+
+      const airportRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://chadlanoway.github.io/agol/local_airport.png",
+          "width": "18px",
+          "height": "18px"
+        }
+      }
+      const airportLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_AirportsLab2/FeatureServer",
+        renderer: airportRenderer
+      });
+      map.add(airportLayer);
       //mouse listener
       view.on("pointer-move", function (event) {
         view.hitTest(event).then(function (response) {
