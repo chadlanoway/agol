@@ -249,6 +249,15 @@
           "height": "18px"
         }
       }
+      const heliportRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://chadlanoway.github.io/agol/helicopter.png",
+          "width": "18px",
+          "height": "18px"
+        }
+      }
       //const to make the airport labels
       const airportLabels = {
         symbol: {
@@ -283,8 +292,23 @@
         }
       });
 
-      map.add(airportLayer);
-      
+      const heliportLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_AirportsLab2/FeatureServer",
+        renderer: heliportRenderer,
+        definitionExpression: "Fac_Type = 'HELIPORT'",
+        labelingInfo: [airportLabels],
+        featureReduction: {
+          type: "cluster",
+          clusterRadius: "75px",
+          popupTemplate: {
+            title: "Cluster of {cluster_count} Airports",
+            content: "Click individual airports for details."
+          }
+        }
+      });
+
+      map.addMany([airportLayer, heliportLayer]);
+
       //mouse listener
       view.on("pointer-move", function (event) {
         view.hitTest(event).then(function (response) {
