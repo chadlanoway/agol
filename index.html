@@ -18,7 +18,10 @@
       "esri/widgets/Search",
       "esri/widgets/Locate",
       "esri/Graphic",
-      "esri/layers/GraphicsLayer"
+      "esri/layers/GraphicsLayer",
+
+      //adding in the module for the feature layers
+      "esri/layers/FeatureLayer"
     ], function (
       esriConfig,
       EsriMap,
@@ -26,10 +29,11 @@
       BasemapGallery,
       Expand,
       Search,
-      Locate, Graphic, GraphicsLayer
+      Locate, Graphic, GraphicsLayer, FeatureLayer
     ) {
-
-      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbwnBerGwU8Wumof_lUh8dvOACtkjv05hpJVZUEfhD6boZk7bkfG7rJw19bjjE8jAAC-G_fXtuqjj5I3uDHPB1EGvWkBkfgHmutYJsNbTjw5I3iyTtwsO8soj9YfpgOvCnnUaIUGsrriFRQo9dOK7mGc__zouXGj0DK5kmCwGotf4Jn33AQPF50a4lI7ox1N1MAT1_lRMSR6bx";
+      // AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbwnBerGwU8Wumof_lUh8dvOACtkjv05hpJVZUEfhD6boZk7bkfG7rJw19bjjE8jAAC-G_fXtuqjj5I3uDHPB1EGvWkBkfgHmutYJsNbTjw5I3iyTtwsO8soj9YfpgOvCnnUaIUGsrriFRQo9dOK7mGc__zouXGj0DK5kmCwGotf4Jn33AQPF50a4lI7ox1N1MAT1_lRMSR6bx
+      // AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbUYYbNeWNxdxCB5WhkHUPjcK_CV3W_SGQCA0ssQEyUiLPKD-kWBBT_dklqzdiyvyAt17ZW1fGVdGFwgsNssf_YMkiJ7WYEqjWKjjUlgiNGrT3xSPA-LKs_qbwApw5QXTFICChry-vG-rS20YZQBgo018rBpeRFQpsDJKxsve3vIJiHMBAX0ChpUVIsPhwBBPXAT1_VcFa9Q1Z
+      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbUYYbNeWNxdxCB5WhkHUPjcK_CV3W_SGQCA0ssQEyUiLPKD-kWBBT_dklqzdiyvyAt17ZW1fGVdGFwgsNssf_YMkiJ7WYEqjWKjjUlgiNGrT3xSPA-LKs_qbwApw5QXTFICChry-vG-rS20YZQBgo018rBpeRFQpsDJKxsve3vIJiHMBAX0ChpUVIsPhwBBPXAT1_VcFa9Q1Z";
 
       const map = new EsriMap({
         basemap: "streets-navigation-vector"
@@ -40,7 +44,7 @@
         container: "viewDiv",
         map: map,
         center: [-97.7431, 30.2672],
-        scale: 25000
+        scale: 50000000
 
       });
       // make a basemap gallery
@@ -197,19 +201,60 @@
         console.log("Located user at:", event.position.coords);
       });
 
-      // listener to change mouse to pointer
+
+      // took a minute to figure out there's multiple layers in the url. 
+      const celestialLayer = new FeatureLayer({
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Day_Night_Terminator/FeatureServer/0",
+        popupTemplate: {
+          title: "Celestial Body",
+          content: `
+            <b>Description:</b> {description}<br>
+            <b>Timestamp:</b> {timestamp}
+        `
+        }
+      });
+
+      const horizonLayer = new FeatureLayer({
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Day_Night_Terminator/FeatureServer/1",
+        popupTemplate: {
+          title: "Horizon Line",
+          content: `
+            <b>Description:</b> {description}<br>
+            <b>Timestamp:</b> {timestamp}
+        `
+        }
+      });
+
+      const terminatorLayer = new FeatureLayer({
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Day_Night_Terminator/FeatureServer/2",
+        popupTemplate: {
+          title: "Terminator Polygon",
+          content: `
+            <b>Description:</b> {description}<br>
+            <b>Timestamp:</b> {timestamp}
+        `
+        }
+      });
+
+      // Add to map
+      map.addMany([terminatorLayer, horizonLayer, celestialLayer]);
+
+      //mouse listener
       view.on("pointer-move", function (event) {
         view.hitTest(event).then(function (response) {
           const results = response.results;
-          if (results.length > 0 && results.some(result => result.graphic && result.graphic.layer === graphicsLayer)) {
-            // Mouse is over a graphic in graphicsLayer → show pointer
-            view.container.style.cursor = "pointer";
-          } else {
-            // Mouse is not over → revert to default
-            view.container.style.cursor = "default";
-          }
+          const isOverTarget = results.some(result => {
+            const layer = result.graphic?.layer;
+            return layer === graphicsLayer ||
+              layer === celestialLayer ||
+              layer === horizonLayer ||
+              layer === terminatorLayer;
+          });
+
+          view.container.style.cursor = isOverTarget ? "pointer" : "default";
         });
       });
+
 
     });
 
