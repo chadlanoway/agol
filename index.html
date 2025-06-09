@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Hello, world!</title>
   <meta charset="UTF-8" />
@@ -7,16 +8,16 @@
   <meta name="description" content="" />
   <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
   <script src="https://js.arcgis.com/4.25/"></script>
-  <script>  
-  require([
+  <script>
+    require([
       "esri/config",
       "esri/Map",
       "esri/views/MapView",
       "esri/widgets/BasemapGallery",
       "esri/widgets/Expand",
       "esri/widgets/Search",
-      "esri/widgets/Locate",   
-      "esri/Graphic",  
+      "esri/widgets/Locate",
+      "esri/Graphic",
       "esri/layers/GraphicsLayer"
     ], function (
       esriConfig,
@@ -26,21 +27,21 @@
       Expand,
       Search,
       Locate, Graphic, GraphicsLayer
-    ) { //AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sb7ztb4uxrouLY_PEP3yDZIc6eitLvHv7O199kztREAdbXglF0zmfz_EAX-OgmUhBODvOpbwg-0rOK-v_mEMNVqGi3BwJm1JL6maf_hLSJw7OtlANrRRjhmhBO2BXjzgtfW6cPDZdOjnO2JQFsCDj5TnDoW0hHHL5KmKsTt6vPpq2DKvU8N2zN_yEY7YWDEP70AT1_YqnMWtvh
-      
-    esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbwnBerGwU8Wumof_lUh8dvOACtkjv05hpJVZUEfhD6boZk7bkfG7rJw19bjjE8jAAC-G_fXtuqjj5I3uDHPB1EGvWkBkfgHmutYJsNbTjw5I3iyTtwsO8soj9YfpgOvCnnUaIUGsrriFRQo9dOK7mGc__zouXGj0DK5kmCwGotf4Jn33AQPF50a4lI7ox1N1MAT1_lRMSR6bx"; 
-      
-   const map = new EsriMap({
-    basemap: "streets-navigation-vector"
-  });
+    ) {
+
+      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurI_RfmIe9k9xWA71ZLIIsczdLg11Hph-QWgzWd0_r5sbwnBerGwU8Wumof_lUh8dvOACtkjv05hpJVZUEfhD6boZk7bkfG7rJw19bjjE8jAAC-G_fXtuqjj5I3uDHPB1EGvWkBkfgHmutYJsNbTjw5I3iyTtwsO8soj9YfpgOvCnnUaIUGsrriFRQo9dOK7mGc__zouXGj0DK5kmCwGotf4Jn33AQPF50a4lI7ox1N1MAT1_lRMSR6bx";
+
+      const map = new EsriMap({
+        basemap: "streets-navigation-vector"
+      });
 
 
-    const view = new MapView({
-        container: "viewDiv", 
+      const view = new MapView({
+        container: "viewDiv",
         map: map,
-        center: [-97.7431, 30.2672],  
-        scale: 25000                  
-       
+        center: [-97.7431, 30.2672],
+        scale: 25000
+
       });
       // make a basemap gallery
       const basemapGallery = new BasemapGallery({
@@ -48,47 +49,108 @@
       });
 
       // Graphics layer
-      const graphicsLayer = new GraphicsLayer();  
+      const graphicsLayer = new GraphicsLayer();
       map.add(graphicsLayer);
 
       const point = { //Create a point  
-          type: "point",  
-          longitude: -97.750689,    //long lat of Stevie Ray Vaughan Statue
-          latitude: 30.263098
-        };
+        type: "point",
+        longitude: -97.750689,    //long lat of Stevie Ray Vaughan Statue
+        latitude: 30.263098
+      };
 
-      const simpleMarkerSymbol = {  
-          type: "simple-marker",  
-          color: [0, 0, 139],  // Color of blues rock
-          outline: {  
-            color: [255, 255, 255], // White  
-            width: 1
-          }  
-        };
+      const simpleMarkerSymbol = {
+        type: "simple-marker",
+        color: [0, 0, 139],  // Color of blues rock
+        outline: {
+          color: [255, 255, 255], // White  
+          width: 1
+        }
+      };
 
       const popupTemplate = {
-      title: "{Name}",
-      content: "{Description}"
-  }
-  const attributes = {
-      Name: "Stevie Ray Vaughan Statue",
-      Description: "A bronze sculpture of Stevie Ray Vaughan by Ralph Helmick"
-  }
-      const pointGraphic = new Graphic({  
-          geometry: point,  
-          symbol: simpleMarkerSymbol,
-          attributes: attributes,
-          popupTemplate: popupTemplate  
-        });
-        
-      graphicsLayer.add(pointGraphic);
+        title: "{Name}",
+        content: "{Description}"
+      }
+      const attributes = {
+        Name: "Stevie Ray Vaughan Statue",
+        Description: "A bronze sculpture of Stevie Ray Vaughan by Ralph Helmick"
+      }
+      const pointGraphic = new Graphic({
+        geometry: point,
+        symbol: simpleMarkerSymbol,
+        attributes: attributes,
+        popupTemplate: popupTemplate
+      });
+
+
+
+      // Polygon geometry
+      const polygon = {
+        type: "polygon",
+        rings: [
+          [
+            [-97.751, 30.2635],
+            [-97.749, 30.2635],
+            [-97.749, 30.2625],
+            [-97.751, 30.2625],
+            [-97.751, 30.2635]
+          ]
+        ]
+      };
+
+      // Polygon symbol
+      const polygonSymbol = {
+        type: "simple-fill",
+        color: [255, 0, 0, 0.3],
+        outline: {
+          color: [255, 0, 0],
+          width: 2
+        }
+      };
+
+      // Polygon graphic
+      const polygonGraphic = new Graphic({
+        geometry: polygon,
+        symbol: polygonSymbol
+      });
+
+
+      // Polyline geometry
+      const polyline = {
+        type: "polyline",
+        paths: [
+          [
+            [-97.752, 30.2630],
+            [-97.750, 30.2635],
+            [-97.748, 30.2628]
+          ]
+        ]
+      };
+
+      // Polyline symbol
+      const polylineSymbol = {
+        type: "simple-line",
+        color: [0, 128, 0], // green
+        width: 3
+      };
+
+      // Polyline graphic
+      const polylineGraphic = new Graphic({
+        geometry: polyline,
+        symbol: polylineSymbol
+      });
+
+
+      // neat trick, 'addMany' takes an array
+      graphicsLayer.addMany([pointGraphic, polygonGraphic, polylineGraphic]);
+
 
       //wrap the gallery
       const bgExpand = new Expand({
         view: view,
         content: basemapGallery,
-        expandIconClass: "esri-icon-basemap", 
-        expanded: false,     
+        expandIconClass: "esri-icon-basemap",
+        expanded: false,
         expandTooltip: "Choose a basemap",
         group: "top-left",
         container: document.createElement("div")
@@ -100,7 +162,7 @@
 
       // listen for changes
       basemapGallery.watch("activeBasemap", (newBasemap) => {
-        console.log("User selected basemap:", newBasemap.title);     
+        console.log("User selected basemap:", newBasemap.title);
       });
       // search box
       const searchWidget = new Search({
@@ -115,47 +177,58 @@
       // locate button
       const locateWidget = new Locate({
         view: view,
-        useHeadingEnabled: false,  
+        useHeadingEnabled: false,
         goToOverride: function (view, options) {
-          
+
           return view.goTo({
-            target: options.target, 
-            scale: 5000            
+            target: options.target,
+            scale: 5000
           });
         }
       });
-      
+
       view.ui.add(locateWidget, {
         position: "top-right",
-        index: 1 
+        index: 1
       });
 
       // listen for coord returns
       locateWidget.on("locate", function (event) {
         console.log("Located user at:", event.position.coords);
       });
-      
+
       // listener to change mouse to pointer
       view.on("pointer-move", function (event) {
-      view.hitTest(event).then(function (response) {
-        const results = response.results;
-        if (results.length > 0 && results.some(result => result.graphic && result.graphic.layer === graphicsLayer)) {
-          // Mouse is over a graphic in graphicsLayer → show pointer
-          view.container.style.cursor = "pointer";
-        } else {
-          // Mouse is not over → revert to default
-          view.container.style.cursor = "default";
-        }
+        view.hitTest(event).then(function (response) {
+          const results = response.results;
+          if (results.length > 0 && results.some(result => result.graphic && result.graphic.layer === graphicsLayer)) {
+            // Mouse is over a graphic in graphicsLayer → show pointer
+            view.container.style.cursor = "pointer";
+          } else {
+            // Mouse is not over → revert to default
+            view.container.style.cursor = "default";
+          }
+        });
       });
+
     });
 
-  });  
 
- 
-   </script>
-  <style>  html,  body,  #viewDiv {  padding: 0;  margin: 0;  height: 100%;  width: 100%;  }  </style> 
+  </script>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
-  <div id="viewDiv"></div> 
+  <div id="viewDiv"></div>
 </body>
+
 </html>
